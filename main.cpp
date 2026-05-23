@@ -112,6 +112,7 @@ int main(int argc, char **argv)
             {
                 cout << m.name << ", " << fixed << setprecision(1) << m.rating << "\n";
             }
+            cout << "\n";
             bestResults[i] = matches[0];
         }
     }
