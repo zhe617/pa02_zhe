@@ -126,55 +126,57 @@ int main(int argc, char **argv)
                  << bestResults[i].rating << "\n";
         }
     }
+    return 0;
+}
 
-    /* Add your run time analysis for part 3 of the assignment here as commented block*/
-    /* Part 3: Time and Space Complexity Analysis
-     *
-     * Parameters:
-     *   n = number of movies in the dataset
-     *   m = number of prefixes
-     *   k = max number of movies matching a single prefix
-     *   l = max number of characters in a movie name
-     *
-     *
-     * Part 3a
-     *
-     * For each of the m prefixes, the code does:
-     *   1. map::lower_bound(prefix)  :  O(l * log n)
-     *      The map does log n node comparisons, each costing O(l)
-     *      in the worst case for string comparison.
-     *   2. Walk through k matching entries, checking substr each time : O(k * l)
-     *   3. Sort k matches by rating and name : O(k log k)
-     *
-     * Per prefix: O(l * log n + k * l + k log k)
-     * Total:      O(m * (l * log n + k * l + k log k))
-     * Part 3b
-     *
-     * The map stores n entries, each name up to l characters:  O(n * l)
-     * The temporary matches vector holds up to k movies:       O(k * l)
-     * The bestResults vector holds m entries:                  O(m * l)
-     *
-     * The map dominates, so:
-     * Total: O(n * l)
-     * (with O(k * l + m * l) additional working space)
-     * Part 3c: Tradeoffs
-     *
-     * I designed for low time complexity.
-     * Target: O(m * (l * log n + k log k))
-     *
-     * The key decision was using std::map + lower_bound so that each prefix search starts at the right position in O(log n) rather than scanning all n movies linearly.
-     * I was also able to keep space complexity low. Since I did not
-     * pre-build any prefix structure, the space stays at O(n * l), just enough to hold the data.
-     * A trie would give faster O(l) lookups but at much higher space cost. std::map gave a good balance of both goals.
-     */
-    bool parseLine(string & line, string & movieName, double &movieRating)
+/* Add your run time analysis for part 3 of the assignment here as commented block*/
+/* Part 3: Time and Space Complexity Analysis
+ *
+ * Parameters:
+ *   n = number of movies in the dataset
+ *   m = number of prefixes
+ *   k = max number of movies matching a single prefix
+ *   l = max number of characters in a movie name
+ *
+ *
+ * Part 3a
+ *
+ * For each of the m prefixes, the code does:
+ *   1. map::lower_bound(prefix)  :  O(l * log n)
+ *      The map does log n node comparisons, each costing O(l)
+ *      in the worst case for string comparison.
+ *   2. Walk through k matching entries, checking substr each time : O(k * l)
+ *   3. Sort k matches by rating and name : O(k log k)
+ *
+ * Per prefix: O(l * log n + k * l + k log k)
+ * Total:      O(m * (l * log n + k * l + k log k))
+ * Part 3b
+ *
+ * The map stores n entries, each name up to l characters:  O(n * l)
+ * The temporary matches vector holds up to k movies:       O(k * l)
+ * The bestResults vector holds m entries:                  O(m * l)
+ *
+ * The map dominates, so:
+ * Total: O(n * l)
+ * (with O(k * l + m * l) additional working space)
+ * Part 3c: Tradeoffs
+ *
+ * I designed for low time complexity.
+ * Target: O(m * (l * log n + k log k))
+ *
+ * The key decision was using std::map + lower_bound so that each prefix search starts at the right position in O(log n) rather than scanning all n movies linearly.
+ * I was also able to keep space complexity low. Since I did not
+ * pre-build any prefix structure, the space stays at O(n * l), just enough to hold the data.
+ * A trie would give faster O(l) lookups but at much higher space cost. std::map gave a good balance of both goals.
+ */
+bool parseLine(string &line, string &movieName, double &movieRating)
+{
+    int commaIndex = line.find_last_of(",");
+    movieName = line.substr(0, commaIndex);
+    movieRating = stod(line.substr(commaIndex + 1));
+    if (movieName[0] == '\"')
     {
-        int commaIndex = line.find_last_of(",");
-        movieName = line.substr(0, commaIndex);
-        movieRating = stod(line.substr(commaIndex + 1));
-        if (movieName[0] == '\"')
-        {
-            movieName = movieName.substr(1, movieName.length() - 2);
-        }
-        return true;
+        movieName = movieName.substr(1, movieName.length() - 2);
     }
+    return true;
+}
